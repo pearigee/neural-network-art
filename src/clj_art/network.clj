@@ -51,6 +51,6 @@
       net
       (let [gen (repeatedly 500 #(mutate net 0.33))
             result (first (sort-by first 
-                            (map #(score % input expected-output) gen)))]
+                            (pmap #(score % input expected-output) gen)))]
         (if (= (mod i 10) 0) (println (double (/ i iterations)) (first result)))
         (recur (second result) input expected-output iterations (+ i 1))))))

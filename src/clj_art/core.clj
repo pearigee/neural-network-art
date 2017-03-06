@@ -3,15 +3,22 @@
   (:require [clj-art.network :refer :all])
   (:require [clj-art.math :refer :all]))
 
-(def res-x 1000)
-(def res-y 1000)
+(def res-x 500)
+(def res-y 500)
 (def steps 200)
 
-(def inputs  [[1 1]     [1 0]    [0 1]     [0 0]])
-(def outputs [[1 1 1]   [1 1 1]  [1 1 1]   [0 0 0]])
+(defn xfn [x] (Math/cos (* Math/PI x)))
+(defn yfn [y] (Math/sin (* Math/PI y)))
+
+(def inputs  [
+  [1 1 (xfn 1) (yfn 1)] 
+  [1 0 (xfn 1) (yfn 0)]
+  [0 1 (xfn 0) (yfn 1)] 
+  [0 0 (xfn 0) (yfn 0)]])
+(def outputs [[0 0 0]   [1 1 1]  [1 1 1]   [0 0 0]])
 
 (defn rand-net []
-  [(layer 2 10 tanh false)
+  [(layer 4 10 tanh false)
    (layer 10 10 tanh true)
    (layer 10 10 tanh true)
    (layer 10 3 sig true)])
@@ -22,7 +29,7 @@
 (defn draw-fn [x y net]
   (let [x-norm (/ x res-x)
         y-norm (/ y res-y)
-        [r g b] (feed-forward net [x-norm y-norm])]
+        [r g b] (feed-forward net [x-norm y-norm (xfn x-norm) (yfn y-norm)])]
     [(* r 255) (* g 255) (* b 255)]))
 
 (defn setup []
